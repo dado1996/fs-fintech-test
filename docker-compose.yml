@@ -1,0 +1,87 @@
+
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      # Optionally pass build args for env vars if needed
+      # args:
+      #   REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL:-http://localhost:3001/api}
+    ports:
+      - "${FRONTEND_PORT:-80}:80" # Map host port 80 (or specified) to container 80 (nginx)
+    networks:
+      - finsim_net
+    depends_on:
+      - backend # Frontend might need backend to be available
+    # Add volume for development if needed for hot-reloading (not for candidate delivery)
+    # volumes:
+    #   - ./frontend/src:/app/src
+
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - .env # Load environment variables from .env file
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    volumes:
+      # Mount source for development (not for candidate delivery)
+      # - ./backend/src:/app/src
+      # Persist logs (optional)
+      - backend_logs:/app/logs
+    networks:
+      - finsim_net
+    depends_on:
+      db: # Ensure DB is healthy before starting backend
+        condition: service_healthy
+      firebase: # Optional, if backend needs firebase emulator immediately
+        condition: service_started
+
+  db:
+    image: postgres:15-alpine
+    env_file:
+      - .env # Use same .env for consistency
+    ports:
+      - "${DB_HOST_PORT:-5432}:5432" # Expose DB port to host for inspection tools
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Mount init script if needed (Sequelize migrations handle schema now)
+      # - ./backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - finsim_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finsim_user} -d ${POSTGRES_DB:-finsim_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  firebase:
+    image: firebase/tools:latest # Or a specific version
+    # The container needs access to the firebase project files
+    working_dir: /app
+    volumes:
+      - ./firebase:/app/firebase # Mount firebase config
+      # If functions code is separate
+      # - ./firebase/functions:/app/firebase/functions
+    ports:
+      - "4000:4000" # Emulator UI
+      - "5001:5001" # Functions
+      - "8080:8080" # Firestore
+      - "9099:9099" # Auth
+      - "9199:9199" # Storage
+    command: >
+      sh -c "firebase emulators:start --project=demo-project --import=/app/firebase/seed_data --export-on-exit=/app/firebase/export_data"
+      # Using a demo project ID is fine for emulators
+      # Add --import/--export flags if you want data persistence for emulators
+      # Pointing to a path INSIDE the container for import/export
+    networks:
+      - finsim_net
+
+networks:
+  finsim_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  backend_logs:
+
