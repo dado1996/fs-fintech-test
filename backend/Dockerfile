@@ -25,13 +25,13 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.sequelizerc ./
-COPY --from=builder /app/src/config/config.js ./src/config/config.js # Sequelize CLI needs this
-COPY --from=builder /app/database ./database # Migrations and Seeders
+COPY --from=builder /app/src/config/config.js ./src/config/config.js
+COPY --from=builder /app/database ./database
 
 # Explicitly copy .env or rely on docker-compose to inject it
 # COPY .env . # Generally not recommended to copy .env into image
 
-EXPOSE 3001 # Default backend port
+EXPOSE 3001
 
 # Command to run the application
 # We run migrations before starting the server.
