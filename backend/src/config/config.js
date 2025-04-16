@@ -1,6 +1,5 @@
 
-    require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') }); // Adjust path as necessary
-    const path = require('path');
+    require('dotenv/config'); 
 
     module.exports = {
       development: {
@@ -10,12 +9,6 @@
         host: process.env.DB_HOST,
         port: process.env.DB_PORT || 5432,
         dialect: 'postgres'
-      },
-      test: {
-        // ... add test environment config if needed
-      },
-      production: {
-        // ... add production environment config if needed
       }
     };
     

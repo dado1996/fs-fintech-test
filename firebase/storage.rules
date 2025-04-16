@@ -1,0 +1,10 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow read/write access to all storage objects for simplicity in emulation
+    // WARNING: Do NOT use these rules in production!
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}

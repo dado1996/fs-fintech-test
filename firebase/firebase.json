@@ -3,7 +3,7 @@
       "emulators": {
         "auth": {
           "port": 9099,
-          "host": "0.0.0.0" // Listen on all interfaces within Docker
+          "host": "0.0.0.0" 
         },
         "firestore": {
           "port": 8080,
@@ -18,8 +18,8 @@
            "host": "0.0.0.0"
         },
         "ui": {
-          "enabled": true, // Enable Emulator UI
-          "port": 4000,    // Default UI port
+          "enabled": true, 
+          "port": 4000,    
           "host": "0.0.0.0"
         }
       },
@@ -37,13 +37,13 @@
             "firebase-debug.*.log"
           ],
           "predeploy": [
-            "npm --prefix "$RESOURCE_DIR" run lint",
-            "npm --prefix "$RESOURCE_DIR" run build" // If using TS for functions
+            "npm --prefix \"$RESOURCE_DIR\" run lint",
+            "npm --prefix \"$RESOURCE_DIR\" run build" 
           ]
         }
       ],
       "storage": {
-        "rules": "storage.rules" // Add if needed
+        "rules": "storage.rules" 
       }
     }
     
