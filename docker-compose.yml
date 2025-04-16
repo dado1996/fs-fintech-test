@@ -1,5 +1,3 @@
-
-
 services:
   frontend:
     build:
@@ -8,7 +6,7 @@ services:
       # args:
       #   REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL:-http://localhost:3001/api}
     ports:
-      - "3000:3000" 
+      - "3000:3000"
     networks:
       - finsim_net
     depends_on:
@@ -23,7 +21,7 @@ services:
     env_file:
       - .env # Load environment variables from .env file
     ports:
-      - "3001"
+      - "3001:3001"
     volumes:
       # Mount source for development (not for candidate delivery)
       # - ./backend/src:/app/src
@@ -32,9 +30,11 @@ services:
     networks:
       - finsim_net
     depends_on:
-      db: # Ensure DB is healthy before starting backend
+      db:
+        # Ensure DB is healthy before starting backend
         condition: service_healthy
-      firebase: # Optional, if backend needs firebase emulator immediately
+      firebase:
+        # Optional, if backend needs firebase emulator immediately
         condition: service_started
 
   db:
@@ -50,7 +50,7 @@ services:
     networks:
       - finsim_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finsim_user} -d ${POSTGRES_DB:-finsim_db}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finsim_user} -d ${POSTGRES_DB:-finsim_db}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -81,4 +81,5 @@ networks:
 volumes:
   postgres_data:
   backend_logs:
+
 
