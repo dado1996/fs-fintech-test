@@ -8,7 +8,7 @@ services:
       # args:
       #   REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL:-http://localhost:3001/api}
     ports:
-      - "${FRONTEND_PORT:-80}:80" # Map host port 80 (or specified) to container 80 (nginx)
+      - "80" # Map host port 80 (or specified) to container 80 (nginx)
     networks:
       - finsim_net
     depends_on:
@@ -23,7 +23,7 @@ services:
     env_file:
       - .env # Load environment variables from .env file
     ports:
-      - "${BACKEND_PORT:-3001}:3001"
+      - "3001"
     volumes:
       # Mount source for development (not for candidate delivery)
       # - ./backend/src:/app/src
@@ -42,7 +42,7 @@ services:
     env_file:
       - .env # Use same .env for consistency
     ports:
-      - "${DB_HOST_PORT:-5432}:5432" # Expose DB port to host for inspection tools
+      - "5432" # Expose DB port to host for inspection tools
     volumes:
       - postgres_data:/var/lib/postgresql/data
       # Mount init script if needed (Sequelize migrations handle schema now)
@@ -56,7 +56,7 @@ services:
       retries: 5
 
   firebase:
-    image: firebase/tools:latest # Or a specific version
+    image: andreysenov/firebase-tools:latest # Or a specific version
     # The container needs access to the firebase project files
     working_dir: /app
     volumes:
