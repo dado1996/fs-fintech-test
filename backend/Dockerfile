@@ -12,7 +12,7 @@ RUN npm install
 # Copy the rest of the backend source code
 COPY . .
 
-RUN mkdir -p ./backend/database/migrations
+RUN mkdir -p ./app/database/migrations
 
 # Build TypeScript code
 RUN npm run build
