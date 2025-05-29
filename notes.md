@@ -74,3 +74,21 @@ Fixes:
 Message:
 Dear customer.
 We are really sorry for what you're experiencing regarding transfers between users. We'll work as soon as possible to
+
+# Scenario 5
+
+Problem: The withdrawal action doesn't permanently change the balance of the account
+
+Causes:
+
+- There are no services that withdraw from the balance in the database
+- No fetching methods that call the backend
+
+Fixes:
+
+- Implement a withdraw service in the backend
+- Create a fetch function to call the withdraw endpoint
+
+Message:
+Dear customer.
+We're currently having issues with the processing of the withdrawals of the user accounts. We're working on a solution that involves rewriting the withdraw service and create a link to the service so the client connects succesfully
