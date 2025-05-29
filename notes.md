@@ -56,3 +56,21 @@ Fixes:
 Message:
 Dear customer.
 We are working on a solution to fix the issue related to your balance. We will notify you of the change as soon as possible
+
+# Scenario 4
+
+Problem: Transfer to another user doesn't get reflected on the recipient's account. And the value returns to its original state after refreshing the page
+
+Causes:
+
+- The frontend doesn't have a fetch request to a backend transfer service
+- The backend doesn't have a trasnfer service implementation
+
+Fixes:
+
+- Implement a feature to handle transfers between recipients
+- Create a fetch function to call the backend service for transfers
+
+Message:
+Dear customer.
+We are really sorry for what you're experiencing regarding transfers between users. We'll work as soon as possible to
