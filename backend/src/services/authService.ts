@@ -41,6 +41,8 @@ export const login = async (email: string, password: string) => {
     status: 200,
     data: {
       token,
+      email,
+      balance: user.balance,
     },
   };
 };
@@ -72,6 +74,7 @@ export const register = async ({
     email,
     phone: phone || "",
     password: `${salt}:${hashedPassword}`,
+    balance: 0.0,
   });
 
   return {

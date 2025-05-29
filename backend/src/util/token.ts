@@ -8,3 +8,7 @@ export const createToken = (data: object): string => {
     expiresIn: 60 * 60,
   });
 };
+
+export const verifyToken = (token: string) => {
+  return jwt.verify(token, PRIVATE_KEY, { algorithms: ["HS256"] });
+};
