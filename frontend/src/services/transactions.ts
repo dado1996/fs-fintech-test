@@ -16,6 +16,13 @@ interface TransferResponse {
   };
 }
 
+interface WithdrawResponse {
+  message: string;
+  data?: {
+    balance: number;
+  };
+}
+
 export const fetchDeposit = (email: string, amount: number) => {
   const token = localStorage.getItem("token");
   return axios.post<DepositResponse>(
@@ -40,6 +47,22 @@ export const fetchTransfer = (
     {
       deliverer,
       recipient,
+      amount,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const fetchWithdraw = (email: string, amount: number) => {
+  const token = localStorage.getItem("token");
+  return axios.post<WithdrawResponse>(
+    `${API_URL}/transactions/withdraw`,
+    {
+      email,
       amount,
     },
     {
