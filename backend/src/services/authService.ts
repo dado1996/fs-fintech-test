@@ -1,7 +1,14 @@
-import { scryptSync, timingSafeEqual } from "crypto";
+import { randomBytes, scryptSync, timingSafeEqual } from "crypto";
 import * as admin from "firebase-admin";
 import User from "../models/user";
 import { createToken } from "../util/token";
+
+interface RegisterDTO {
+  name: string;
+  email: string;
+  phone?: string;
+  password: string;
+}
 
 export const login = async (email: string, password: string) => {
   const user = await User.findOne({
@@ -35,5 +42,40 @@ export const login = async (email: string, password: string) => {
     data: {
       token,
     },
+  };
+};
+
+export const register = async ({
+  name,
+  email,
+  phone,
+  password,
+}: RegisterDTO) => {
+  const user = await User.findOne({
+    where: {
+      email,
+    },
+  });
+
+  if (user) {
+    return {
+      status: 400,
+      message: "Email already registered",
+    };
+  }
+
+  const salt = randomBytes(16).toString("hex");
+  const hashedPassword = scryptSync(password, salt, 64).toString("hex");
+
+  const result = await User.create({
+    name,
+    email,
+    phone: phone || "",
+    password: `${salt}:${hashedPassword}`,
+  });
+
+  return {
+    status: 201,
+    message: "User created",
   };
 };

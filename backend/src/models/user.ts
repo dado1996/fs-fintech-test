@@ -4,6 +4,7 @@ interface UserAttributes {
   id: number;
   name: string;
   email: string;
+  phone: string;
   password: string;
   // ... other attributes
 }
@@ -17,6 +18,7 @@ class User
   public id!: number;
   public name!: string;
   public email!: string;
+  public phone!: string;
   public password!: string;
   // ... other attributes
   public readonly createdAt!: Date;
@@ -39,6 +41,9 @@ export const initUser = (sequelize: Sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+      },
+      phone: {
+        type: DataTypes.STRING,
       },
       password: {
         type: DataTypes.STRING,
