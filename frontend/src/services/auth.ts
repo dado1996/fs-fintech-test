@@ -3,8 +3,10 @@ import axios from "axios";
 const API_URL = "http://localhost:3001/api";
 
 interface LoginResponse {
-  data: {
+  data?: {
     token: string;
+    email: string;
+    balance: number;
   };
   message?: string;
 }

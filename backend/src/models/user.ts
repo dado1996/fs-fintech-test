@@ -6,6 +6,7 @@ interface UserAttributes {
   email: string;
   phone: string;
   password: string;
+  balance: number;
   // ... other attributes
 }
 
@@ -20,6 +21,7 @@ class User
   public email!: string;
   public phone!: string;
   public password!: string;
+  public balance!: number;
   // ... other attributes
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -48,6 +50,11 @@ export const initUser = (sequelize: Sequelize) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      balance: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 0.0,
       },
     },
     {

@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import { initializeDatabase } from "./config/db";
 import userRouter from "./routes/userRoutes";
 import authRouter from "./routes/authRoutes";
+import transactionRouter from "./routes/transactionRoutes";
 import errorHandler from "./middleware/errorHandler";
 import * as admin from "firebase-admin";
 
@@ -20,8 +21,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/transactions", transactionRouter);
 app.use(errorHandler);
 
 // Start the server after database initialization
