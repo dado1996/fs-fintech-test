@@ -1,3 +1,4 @@
+import sequelize from "../config/db";
 import User from "../models/user";
 
 export const deposit = async (email: string, amount: number) => {
@@ -31,6 +32,61 @@ export const deposit = async (email: string, amount: number) => {
     message: "The balance has been updated",
     data: {
       balance: newBalance[1][0].dataValues.balance,
+    },
+  };
+};
+
+export const transfer = async (
+  deliverer: string,
+  recipient: string,
+  amount: number
+) => {
+  const t = await sequelize.transaction();
+  const userDeliverer = await User.findOne({
+    where: {
+      email: deliverer,
+    },
+  });
+
+  const userRecipient = await User.findOne({
+    where: {
+      email: recipient,
+    },
+  });
+
+  if (!userDeliverer || !userRecipient) {
+    return { status: 404, message: "The recipient does not exists" };
+  }
+
+  const resultDeliverer = await User.update(
+    {
+      balance: userDeliverer.balance - amount,
+    },
+    {
+      where: {
+        email: deliverer,
+      },
+      returning: ["balance"],
+    }
+  );
+
+  const resultRecipient = await User.update(
+    {
+      balance: userRecipient.balance + amount,
+    },
+    {
+      where: {
+        email: recipient,
+      },
+    }
+  );
+  await t.commit();
+
+  return {
+    status: 200,
+    message: "Transfer completed",
+    data: {
+      balance: resultDeliverer[1][0].dataValues.balance,
     },
   };
 };

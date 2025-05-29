@@ -7,9 +7,11 @@ import { TransferDialog } from "@/components/TransferDialog";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { fetchDeposit } from "@/services/transactions";
+import { fetchDeposit, fetchTransfer } from "@/services/transactions";
 import { useAccountStore } from "@/store/accountStore";
 import { toast } from "@/hooks/use-toast";
+import { Toaster } from "./ui/toaster";
+import { AxiosError } from "axios";
 
 const Dashboard = () => {
   const [isDepositOpen, setIsDepositOpen] = useState(false);
@@ -39,12 +41,32 @@ const Dashboard = () => {
     }
   };
 
-  const handleTransfer = (amount: number) => {
-    if (balance >= amount) {
-      // setBalance(balance - amount);
+  const handleTransfer = async (recipient: string, amount: number) => {
+    try {
+      const result = await fetchTransfer(email, recipient, amount);
+      if (result.status !== 200) {
+        toast({
+          title: "Error",
+          description: result.data.message,
+        });
+        return;
+      }
+      setBalance(result.data.data?.balance!);
+    } catch (error) {
+      console.error(error);
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Error",
+          description: error.response?.data.message,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "An error has occured",
+        });
+      }
+    } finally {
       setIsTransferOpen(false);
-    } else {
-      alert("Insufficient funds");
     }
   };
 
@@ -101,6 +123,7 @@ const Dashboard = () => {
         onClose={() => setIsWithdrawOpen(false)}
         onWithdraw={handleWithdraw}
       />
+      <Toaster />
     </div>
   );
 };
