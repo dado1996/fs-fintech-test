@@ -19,6 +19,7 @@ export default function Home() {
           title: "Error",
           description: result.data.message,
         });
+        return;
       }
       localStorage.setItem("token", result.data.data.token);
       setIsLoggedIn(true);

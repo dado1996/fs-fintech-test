@@ -1,21 +1,39 @@
-'use client'
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast";
+import { AxiosError } from "axios";
+import { register } from "@/services/auth";
 
 const FormSchema = z.object({
-  fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
+  fullName: z
+    .string()
+    .min(2, { message: "Full name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  phoneNumber: z.string().min(10, { message: "Phone number must be at least 10 digits." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  phoneNumber: z
+    .string()
+    .min(10, { message: "Phone number must be at least 10 digits." }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters." }),
 });
 
-export default function Register () {
+export default function Register() {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -26,8 +44,29 @@ export default function Register () {
     },
   });
 
-  function onSubmit(values: z.infer<typeof FormSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof FormSchema>) {
+    try {
+      const result = await register(values);
+      if (result.status !== 201) {
+        toast({
+          title: "Error",
+          description: result.data.message,
+        });
+        return;
+      }
+      toast({
+        title: "Success",
+        description: result.data.message,
+      });
+    } catch (error) {
+      console.error(error);
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Error",
+          description: error.response?.data.message,
+        });
+      }
+    }
   }
 
   return (
@@ -93,6 +132,7 @@ export default function Register () {
             <Button type="submit">Register</Button>
           </form>
         </Form>
+        <Toaster />
       </CardContent>
     </Card>
   );
