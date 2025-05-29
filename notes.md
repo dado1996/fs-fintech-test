@@ -35,3 +35,24 @@ Fixes:
 Message:
 Dear customer.
 We apologize for your experience with our platform. In this moment we are working on fixing any inconveniences that you could have suffered during the failure
+
+# Scenario 3
+
+Problem: The balance of the account resets
+
+Causes:
+
+- The balance is being handled by a client side variable
+- There is no transaction logic in the backend
+- There is no field in the database to store the balance
+
+Fixes:
+
+- Add an balance field to the 'users' table
+- Add a transaction service to the backend
+- Add a state management system to the frontend that allows me to store the account information
+- Add a fetch services to add balance to the newly created balance field
+
+Message:
+Dear customer.
+We are working on a solution to fix the issue related to your balance. We will notify you of the change as soon as possible
