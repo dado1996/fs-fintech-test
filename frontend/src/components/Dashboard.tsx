@@ -1,47 +1,66 @@
 "use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { DepositDialog } from '@/components/DepositDialog';
-import { TransferDialog } from '@/components/TransferDialog';
-import { WithdrawDialog } from '@/components/WithdrawDialog';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { DepositDialog } from "@/components/DepositDialog";
+import { TransferDialog } from "@/components/TransferDialog";
+import { WithdrawDialog } from "@/components/WithdrawDialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { fetchDeposit } from "@/services/transactions";
+import { useAccountStore } from "@/store/accountStore";
+import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
-  const [balance, setBalance] = useState(1000);
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const router = useRouter();
+  const { email, balance, setBalance } = useAccountStore();
 
-  const handleDeposit = (amount: number) => {
-    setBalance(balance + amount);
-    setIsDepositOpen(false);
+  const handleDeposit = async (amount: number) => {
+    try {
+      const result = await fetchDeposit(email, amount);
+      if (result.status !== 200) {
+        toast({
+          title: "Error",
+          description: "There was an error with the transaction",
+        });
+        return;
+      }
+      setBalance(result.data.data?.balance!);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error has occured",
+      });
+    } finally {
+      setIsDepositOpen(false);
+    }
   };
 
   const handleTransfer = (amount: number) => {
     if (balance >= amount) {
-      setBalance(balance - amount);
+      // setBalance(balance - amount);
       setIsTransferOpen(false);
     } else {
-      alert('Insufficient funds');
+      alert("Insufficient funds");
     }
   };
 
   const handleWithdraw = (amount: number) => {
     if (balance >= amount) {
-      setBalance(balance - amount);
+      // setBalance(balance - amount);
       setIsWithdrawOpen(false);
     } else {
-      alert('Insufficient funds');
+      alert("Insufficient funds");
     }
   };
 
   const handleLogout = () => {
     // In a real application, you would clear the session here.
     // For this example, we'll just redirect to the dashboard, simulating a logout.
-    router.push('/'); // Replace '/' with the actual login page route.
+    router.push("/"); // Replace '/' with the actual login page route.
   };
 
   return (
@@ -61,7 +80,9 @@ const Dashboard = () => {
           <Button onClick={() => setIsWithdrawOpen(true)}>Withdraw</Button>
         </div>
         <div className="flex justify-center mt-4">
-          <Button variant="outline" onClick={handleLogout}>Logout</Button>
+          <Button variant="outline" onClick={handleLogout}>
+            Logout
+          </Button>
         </div>
       </Card>
 

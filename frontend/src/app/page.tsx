@@ -6,9 +6,11 @@ import { toast, useToast } from "@/hooks/use-toast";
 import { login } from "@/services/auth";
 import { AxiosError } from "axios";
 import { Toaster } from "@/components/ui/toaster";
+import { useAccountStore } from "@/store/accountStore";
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Start with user not logged in
+  const { email, setEmail, setBalance } = useAccountStore();
+  const [isLoggedIn, setIsLoggedIn] = useState(!!email); // Start with user not logged in
   const { toast } = useToast();
 
   const handleLogin = async (email: string, password: string) => {
@@ -21,7 +23,9 @@ export default function Home() {
         });
         return;
       }
-      localStorage.setItem("token", result.data.data.token);
+      localStorage.setItem("token", result.data.data!.token);
+      setEmail(email);
+      setBalance(result.data.data?.balance!);
       setIsLoggedIn(true);
     } catch (error) {
       console.error(error);
