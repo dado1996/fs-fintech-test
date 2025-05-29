@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,28 +6,32 @@ import {
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 
 interface TransferDialogProps {
   open: boolean;
   onClose: () => void;
-  onTransfer: (amount: number) => void;
+  onTransfer: (recipient: string, amount: number) => void;
 }
 
-export const TransferDialog: React.FC<TransferDialogProps> = ({ open, onClose, onTransfer }) => {
-  const [transferAmount, setTransferAmount] = useState('');
-  const [recipient, setRecipient] = useState('');
+export const TransferDialog: React.FC<TransferDialogProps> = ({
+  open,
+  onClose,
+  onTransfer,
+}) => {
+  const [transferAmount, setTransferAmount] = useState("");
+  const [recipient, setRecipient] = useState("");
 
   const handleConfirmTransfer = () => {
     const amount = parseFloat(transferAmount);
     if (!isNaN(amount) && amount > 0 && recipient) {
       // In a real application, you would validate the recipient and initiate the transfer.
-      onTransfer(amount);
-      setTransferAmount('');
-      setRecipient('');
+      onTransfer(recipient, amount);
+      setTransferAmount("");
+      setRecipient("");
     } else {
-      alert('Please enter a valid amount and recipient.');
+      alert("Please enter a valid amount and recipient.");
     }
   };
 
@@ -55,7 +58,9 @@ export const TransferDialog: React.FC<TransferDialogProps> = ({ open, onClose, o
         />
         <div className="grid grid-cols-2 gap-4 mt-4">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirmTransfer}>Transfer</AlertDialogAction>
+          <AlertDialogAction onClick={handleConfirmTransfer}>
+            Transfer
+          </AlertDialogAction>
         </div>
       </AlertDialogContent>
     </AlertDialog>
