@@ -90,3 +90,45 @@ export const transfer = async (
     },
   };
 };
+
+export const withdraw = async (email: string, amount: number) => {
+  const user = await User.findOne({
+    where: {
+      email,
+    },
+  });
+
+  if (!user) {
+    return {
+      status: 404,
+      message: "User not found",
+    };
+  }
+
+  if (user.balance - amount <= 0) {
+    return {
+      status: 400,
+      message: "Insuficient funds",
+    };
+  }
+
+  const result = await User.update(
+    {
+      balance: user.balance - amount,
+    },
+    {
+      where: {
+        email,
+      },
+      returning: ["balance"],
+    }
+  );
+
+  return {
+    status: 200,
+    message: "Withdrawal completed",
+    data: {
+      balance: result[1][0].dataValues.balance,
+    },
+  };
+};

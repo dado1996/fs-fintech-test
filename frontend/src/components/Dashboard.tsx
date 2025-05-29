@@ -7,7 +7,11 @@ import { TransferDialog } from "@/components/TransferDialog";
 import { WithdrawDialog } from "@/components/WithdrawDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { fetchDeposit, fetchTransfer } from "@/services/transactions";
+import {
+  fetchDeposit,
+  fetchTransfer,
+  fetchWithdraw,
+} from "@/services/transactions";
 import { useAccountStore } from "@/store/accountStore";
 import { toast } from "@/hooks/use-toast";
 import { Toaster } from "./ui/toaster";
@@ -31,6 +35,10 @@ const Dashboard = () => {
         return;
       }
       setBalance(result.data.data?.balance!);
+      toast({
+        title: "Success",
+        description: result.data.message,
+      });
     } catch (error) {
       toast({
         title: "Error",
@@ -52,6 +60,10 @@ const Dashboard = () => {
         return;
       }
       setBalance(result.data.data?.balance!);
+      toast({
+        title: "Success",
+        description: result.data.message,
+      });
     } catch (error) {
       console.error(error);
       if (error instanceof AxiosError) {
@@ -70,12 +82,34 @@ const Dashboard = () => {
     }
   };
 
-  const handleWithdraw = (amount: number) => {
-    if (balance >= amount) {
-      // setBalance(balance - amount);
-      setIsWithdrawOpen(false);
-    } else {
-      alert("Insufficient funds");
+  const handleWithdraw = async (amount: number) => {
+    try {
+      const result = await fetchWithdraw(email, amount);
+      if (result.status !== 200) {
+        toast({
+          title: "Error",
+          description: result.data.message,
+        });
+        return;
+      }
+      setBalance(result.data.data?.balance!);
+      toast({
+        title: "Success",
+        description: result.data.message,
+      });
+    } catch (error) {
+      console.error(error);
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Error",
+          description: error.response?.data.message,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "An error has occured",
+        });
+      }
     }
   };
 
