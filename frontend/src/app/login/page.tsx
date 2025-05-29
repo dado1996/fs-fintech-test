@@ -1,6 +1,13 @@
-'use client'
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -14,7 +21,7 @@ const formSchema = z.object({
 });
 
 interface LoginProps {
-    onLogin: (values: z.infer<typeof formSchema>) => void;
+  onLogin: (values: z.infer<typeof formSchema>) => void;
 }
 
 const Login = ({ onLogin }: LoginProps) => {
@@ -27,8 +34,7 @@ const Login = ({ onLogin }: LoginProps) => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onLogin(values)
-    console.log(values);
+    onLogin(values);
   }
 
   return (
@@ -59,13 +65,17 @@ const Login = ({ onLogin }: LoginProps) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Enter your password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" >Login</Button>
+            <Button type="submit">Login</Button>
             <Link href="/register">
               <Button type="button" variant="link">
                 Register
@@ -76,6 +86,6 @@ const Login = ({ onLogin }: LoginProps) => {
       </CardContent>
     </Card>
   );
-}
+};
 
-export default Login
+export default Login;
