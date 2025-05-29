@@ -17,3 +17,21 @@ Fixes:
 Message:
 Dear customer.
 Thank you for warning us about this security issue. We are very sorry for the inconveniences that you are experiencing with our platform. We are working with a solution that solves any issues regarding the security of your account
+
+# Scenario 2
+
+Problem: User can't login after registering
+
+Causes:
+
+- There is no register service in the backend
+- The register form is not calling any backend endpoint
+
+Fixes:
+
+- Implement the backend service to register a new user
+- Create a function to fetch the register endpoint
+
+Message:
+Dear customer.
+We apologize for your experience with our platform. In this moment we are working on fixing any inconveniences that you could have suffered during the failure
